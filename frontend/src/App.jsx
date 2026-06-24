@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8080/api";
 const PAGE_SIZE = 24;
 
 function formatPrice(price) {
