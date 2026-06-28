@@ -47,7 +47,7 @@ function randomChoice(arr){
 
 
 function randomPrice() {
-  return Math.round((Math.random() * 990 + 9.99) * 100) / 100;
+  return Number((Math.random()*1000).toFixed(2));
 }
 
 function randomName(){
@@ -80,36 +80,58 @@ function generateBatch(size){
       return docs;
 }
 
+// async function seed() {
+//   console.log(`Connecting to ${MONGO_URI}`);
+//   await mongoose.connect(MONGO_URI);
+
+//   console.log("Dropping existing products collection (if any) ...");
+//   await Product.collection.drop().catch(() => {
+//     // collection may not exist yet on first run - that's fine
+//   });
+
+//   console.log(`Inserting ${TOTAL_PRODUCTS} products in batches of ${BATCH_SIZE} ...`);
+//   const start = Date.now();
+
+//   for (let inserted = 0; inserted < TOTAL_PRODUCTS; inserted += BATCH_SIZE) {
+//     const size = Math.min(BATCH_SIZE, TOTAL_PRODUCTS - inserted);
+//     const batch = generateBatch(size);
+//     await Product.insertMany(batch, { ordered: false });
+
+//     console.log(`  inserted ${inserted + size} / ${TOTAL_PRODUCTS}`);
+//   }
+
+//   console.log("Building indexes ...");
+//   await Product.syncIndexes();
+
+//   const elapsedSec = ((Date.now() - start) / 1000).toFixed(1);
+//   console.log(`Done. Inserted ${TOTAL_PRODUCTS} products in ${elapsedSec}s.`);
+
+//   await mongoose.disconnect();
+// }
+
+// seed().catch((err) => {
+//   console.error("Seed failed:", err);
+//   process.exit(1);
+// });
+
+
+
 async function seed() {
-  console.log(`Connecting to ${MONGO_URI}`);
   await mongoose.connect(MONGO_URI);
 
-  console.log("Dropping existing products collection (if any) ...");
-  await Product.collection.drop().catch(() => {
-    // collection may not exist yet on first run - that's fine
-  });
-
-  console.log(`Inserting ${TOTAL_PRODUCTS} products in batches of ${BATCH_SIZE} ...`);
-  const start = Date.now();
+  try {
+    await Product.collection.drop();
+  } catch {}
 
   for (let inserted = 0; inserted < TOTAL_PRODUCTS; inserted += BATCH_SIZE) {
     const size = Math.min(BATCH_SIZE, TOTAL_PRODUCTS - inserted);
+
     const batch = generateBatch(size);
-    await Product.insertMany(batch, { ordered: false });
 
-    console.log(`  inserted ${inserted + size} / ${TOTAL_PRODUCTS}`);
+    await Product.insertMany(batch);
   }
-
-  console.log("Building indexes ...");
-  await Product.syncIndexes();
-
-  const elapsedSec = ((Date.now() - start) / 1000).toFixed(1);
-  console.log(`Done. Inserted ${TOTAL_PRODUCTS} products in ${elapsedSec}s.`);
 
   await mongoose.disconnect();
 }
 
-seed().catch((err) => {
-  console.error("Seed failed:", err);
-  process.exit(1);
-});
+seed().catch(console.error);

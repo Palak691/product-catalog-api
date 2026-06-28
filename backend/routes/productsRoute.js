@@ -3,11 +3,12 @@ import { Product } from "../models/Product.js";
 const router = Router();
 
 function encodeCursor(createdAt, id) {
+
   const cursorObject = {
     createdAt: createdAt.toISOString(), 
     id: id.toString(),                  
   };
-
+  
 
   const jsonString = JSON.stringify(cursorObject);
 
