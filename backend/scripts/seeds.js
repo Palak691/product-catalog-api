@@ -4,7 +4,7 @@ dotenv.config({ path: '../.env' });
 import mongoose from "mongoose";
 import {Product} from '../models/Product.js';
 
-dotenv.config();
+// dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
 
  
