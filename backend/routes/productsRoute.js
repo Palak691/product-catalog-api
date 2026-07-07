@@ -40,13 +40,13 @@ function decodeCursor(cursorString) {
 router.get("/products", async (req, res) => {
   try {
 
-    const requestedLimit = parseInt(req.query.limit, 10); // Convert string to number
-    const limit = Math.min(requestedLimit || 20, 100);    // Use 20 if not provided, cap at 100
+    const requestedLimit = parseInt(req.query.limit, 10); 
+    const limit = Math.min(requestedLimit || 20, 100);    
 
     const category = req.query.category;
 
     const cursorString = req.query.cursor;
-
+    
 
 
     const filter = {};
@@ -54,6 +54,7 @@ router.get("/products", async (req, res) => {
     if (category && category !== "all") {
       filter.category = category;
     }
+
 
     if (cursorString) {
       const decodedCursor = decodeCursor(cursorString);
